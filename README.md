@@ -39,7 +39,7 @@ For busy individuals looking to streamline their daily routines, TuneTask is a m
    
 3. **Activate your Virtual Environment**:
 
-   - windows: venv\Scripts\activate\
+   - windows: .\venv\Scripts\activate
    
    - macOS/Linux: source venv/bin/activate
 
