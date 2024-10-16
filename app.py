@@ -116,33 +116,6 @@ def create_app():
                 return redirect(url_for('login'))
 
         return render_template('register.html', error=error)
-
-    @app.route('/profile/<user>/new_task', methods = ["GET", "POST"])
-    def new_task(user):
-        if request.method == 'POST':
-            # Get form data from the user
-            task_name = request.form.get('task_name')
-            description = request.form.get('description')
-            task = request.form.get('task')
-            song_name = request.form.get('song_name')
-
-            if not task_name or not description:
-                flash("Task name and description are required!")
-                return redirect(url_for('new_task', user = user))
-
-            task_data = {
-                'username': user,
-                'task_name': task_name,
-                'description': description,
-                'task': task,
-                'song_name': song_name,
-            }
-
-            db.tune_tasks.insert_one(task_data)
-
-            flash('New task added successfully!')
-            return redirect(url_for('show_profile', user = user))
-        return render_template('new_task.html')
     
     @app.route('/logout')
     @login_required
