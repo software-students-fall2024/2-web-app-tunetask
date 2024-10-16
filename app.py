@@ -28,16 +28,6 @@ def create_app():
     
     @app.route('/')
     def show_home():
-        
-        connection = pymongo.MongoClient(os.getenv("MONGO_URI"))
-        db = connection[os.getenv("MONGO_DBNAME")]
-
-        try:
-            connection.admin.command("ping")
-            print("MongoDB connection successful")
-        except Exception as e:
-            print("MongoDB connection error:", e)
-
         return render_template('home.html')
     
     @app.route('/profile/<user>')
@@ -121,7 +111,7 @@ def create_app():
             task_list = [request.form.get('task_list')]
             play_list = [request.form.get('play_list')]
 
-            if not task_name or not description:
+            if not title or not description:
                 flash("Task name and description are required!")
                 return redirect(url_for('new_task', user = user))
 
@@ -133,11 +123,17 @@ def create_app():
                 'play_list': play_list,
             }
 
-            mongo.db.tune_tasks.insert_one(task_data)
+            db.tune_tasks.insert_one(task_data)
 
             flash('New task added successfully!')
-            return redirect(url_for('show_profile', user = user, collection = tune_tasks))
+            return redirect(url_for('show_profile', user = user))
         return render_template('new_task.html')
+
+    @app.route('/logout')
+    @login_required
+    def logout():
+        logout_user()
+        return redirect(url_for('login'))
     return app
 
 
