@@ -9,11 +9,9 @@
     <header>
         <nav>
             <a href="/">home</a>
-            |
-            <a href="/search">search</a>
             {% if current_user.is_authenticated %}
                 |
-                <a href="{{ url_for('show_profile', user=current_user.id) }}">my account</a>
+                <a href="{{ url_for('show_profile', user=current_user.id) }}">my profile</a>
                 |
                 <a href="{{ url_for('logout') }}">logout</a>
             {% else %}

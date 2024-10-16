@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from flask import Flask, make_response, request, redirect, url_for, render_template
+from flask import Flask, flash, make_response, request, redirect, url_for, render_template
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
 import os
 import pymongo
@@ -28,16 +28,6 @@ def create_app():
     
     @app.route('/')
     def show_home():
-        
-        connection = pymongo.MongoClient(os.getenv("MONGO_URI"))
-        db = connection[os.getenv("MONGO_DBNAME")]
-
-        try:
-            connection.admin.command("ping")
-            print("MongoDB connection successful")
-        except Exception as e:
-            print("MongoDB connection error:", e)
-
         return render_template('home.html')
     
     @app.route('/profile/<user>')
@@ -58,11 +48,20 @@ def create_app():
     @app.route('/search', methods=["POST"])
     def post_search():
         user = request.form["user"]
-        tune_tasks= list(db.tune_tasks.find({"created_by":user}))
-        # return make_response("hello", 200)
-        if len(tune_tasks) == 0:
-            return make_response("user not found", 200)
+
+        user_data = db.users.find_one({"username": user})
+        if not user_data:
+            return render_template('search.html', error="User not found")
+
+        tune_tasks = list(db.tune_tasks.find({"created_by": user}))
         return render_template('profile.html', user=user, collection=tune_tasks)
+
+    @app.route('/search_suggestions', methods=["GET"])
+    def search_suggestions():
+        query = request.args.get("q", "")
+        users = list(db.users.find({"username": {"$regex": query, "$options": "i"}}))
+        suggestions = [user['username'] for user in users]
+        return {"suggestions": suggestions}
     
     @app.route('/login', methods=["GET", "POST"])
     def login():
@@ -80,10 +79,6 @@ def create_app():
                 return redirect(url_for('show_profile', user=username))
             else:
                 error = "Invalid username or password."
-
-        return render_template('login.html', error=error)
-
-
 
         return render_template('login.html', error=error)
     
@@ -116,7 +111,7 @@ def create_app():
             task_list = [request.form.get('task_list')]
             play_list = [request.form.get('play_list')]
 
-            if not task_name or not description:
+            if not title or not description:
                 flash("Task name and description are required!")
                 return redirect(url_for('new_task', user = user))
 
@@ -128,15 +123,22 @@ def create_app():
                 'play_list': play_list,
             }
 
-            mongo.db.tune_tasks.insert_one(task_data)
+            db.tune_tasks.insert_one(task_data)
 
             flash('New task added successfully!')
-            return redirect(url_for('show_profile', user = user, collection = tune_tasks))
+            return redirect(url_for('show_profile', user = user))
         return render_template('new_task.html')
+
+    @app.route('/logout')
+    @login_required
+    def logout():
+        logout_user()
+        return redirect(url_for('login'))
     return app
 
 
 if __name__ == "__main__":
     FLASK_PORT = os.getenv("FLASK_PORT", "3000")
     app = create_app()
+    app.debug = True
     app.run(port=FLASK_PORT)

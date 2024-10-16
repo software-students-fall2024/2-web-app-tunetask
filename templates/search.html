@@ -1,15 +1,59 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <link
-          rel="stylesheet"
-          href="{{ url_for('static', filename='css/style.css') }}"
-        />
-      </head>
-    <body>
-        <form method="POST" action="{{ url_for('post_search') }}">
-            <input type="text" name="user">Search for a friend to view their profile
-            <input type="submit" value="Save" />
-        </form>
-    </body>
-</html>
+{% extends "layout.html" %}
+
+{% block title %}Search{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    <form id="search-form" method="POST" action="{{ url_for('post_search') }}" class="search-form">
+        <input type="text" id="user-input" name="user" class="search-input" placeholder="Search for a user..." autocomplete="off">
+        <input type="submit" value="Search" class="search-button"/>
+        <div id="suggestions" class="suggestions" style="display: none;"></div>
+    </form>
+    <div class="search-results">
+        {% if users %}
+            <ul class="user-list">
+                {% for user in users %}
+                    <li class="user-item">
+                        <a href="{{ url_for('show_profile', user=user['username']) }}" class="user-link">
+                            {{ user['username'] }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% elif request.method == "POST" %}
+            <p class="no-results">No users found.</p>
+        {% endif %}
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#user-input').on('input', function() {
+            let query = $(this).val();
+            if (query.length > 0) {
+                $.getJSON('/search_suggestions', { q: query }, function(data) {
+                    let suggestions = $('#suggestions');
+                    suggestions.empty();
+                    if (data.suggestions.length > 0) {
+                        suggestions.show();
+                        data.suggestions.forEach(function(suggestion) {
+                            suggestions.append(`<div class="suggestion-item">${suggestion}</div>`);
+                        });
+                    } else {
+                        suggestions.hide();
+                    }
+                });
+            } else {
+                $('#suggestions').hide();
+            }
+        });
+
+        $(document).on('click', '.suggestion-item', function() {
+            $('#user-input').val($(this).text());
+            $('#suggestions').hide();
+        });
+    });
+</script>
+
+{% endblock %}

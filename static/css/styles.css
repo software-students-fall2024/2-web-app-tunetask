@@ -13,6 +13,7 @@ main {
     height: 80vh;
     overflow: auto;
     display: flex;
+    flex-direction: column;
     align-items: center;
 }
 
@@ -22,19 +23,16 @@ body {
 }
 
 nav {
-    width: 80vw;
-    border: 2px solid black;
-    border-radius: 20px;
+    width: 100vw;
+    background-color: black;
     padding: 1em;
-    margin-top: 5%;
     justify-content: flex-start;
 }
 
 nav a {
     text-decoration: none;
-    color: black;
+    color: white;
 }
-
 
 header {
     height: 10vh;
@@ -43,9 +41,9 @@ header {
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 20px;
 }
 
+/* HOME CSS */
 .website-title {
     margin-left: 5%;
     font-size: 7rem;
@@ -53,14 +51,14 @@ header {
     line-height: 100%;
     display: inline-block;
     position: relative;
-
+    margin-top: 0;
 }
 
 .record {
     width: 60%;
     position: absolute;
-    top: 30%;
-    left: 80%; 
+    top: 25%;
+    left: 90%; 
     transform: translateX(-50%); 
     overflow: hidden;
 }
@@ -68,6 +66,7 @@ header {
 .record img {
     width: 100%;
     animation: rotate 5s linear infinite;
+    overflow: hidden;
 }
 
 .record-player {
@@ -92,13 +91,82 @@ footer {
     font-size: 1vh;
 }
 
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* SEARCH CSS */
+.search-container {
+    height: 20vh;
+    justify-content: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+  
+.search-form {
+    border: none;
+    display: flex;
+    width: 80vw;
+    align-items: center;
+    justify-content: center;
+}
+  
+.search-input {
+    padding: 10px;
+    width: 100vw;
+    border-radius: 10px;
+    font-size: 16px;
+    margin-right: 10px;
+}
+  
+.search-button {
+    padding: 10px 20px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    z-index: 1000;
+}
+  
+.search-button:hover {
+    background-color: #868686;
+}
+
+.suggestions {
+    max-height: 200px;
+    overflow-y: auto;
+    background: white;
+    width: 50vw;
+    display: none;
+    position: absolute;
+    margin-top: 11%;
+    left: 10vw;
+    border-radius: 2px solid black;
+}
+
+.suggestion-item {
+    padding: 8px; 
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* LOGIN CSS */
 .login-container {
+    justify-content: center;
     width: 300px;
-    margin: 0 auto;
+    margin: auto;
     padding: 20px;
-    border: 1px solid #ccc;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: #f9f9f9;
     text-align: center;
 }
@@ -128,8 +196,7 @@ input[type="password"] {
     width: 100%;
     padding: 10px; 
     margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: none;
     font-size: 16px;
     box-sizing: border-box;
 }
@@ -138,8 +205,7 @@ input[type="password"] {
     width: 100%;
     padding: 10px;
     font-size: 16px;
-    background-color: rgb(235, 198, 235);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ebc6eb;
     color: white;
     border: none;
     border-radius: 4px;
@@ -147,7 +213,7 @@ input[type="password"] {
 }
 
 .login-button:hover {
-    background-color: rgb(235, 198, 235);
+    background-color: rgb(0, 0, 0);
 }
 
 .error-message {
@@ -158,7 +224,13 @@ input[type="password"] {
 }
 
 .register-link {
+    margin: 10px;
+}
+
+.register-link a {
+    text-decoration: none;
     margin-top: 15px;
+    color: #000000;
     text-align: center;
 }
 
@@ -175,12 +247,46 @@ input[type="password"] {
     color: #5751d9;
 }
 
+.tasktitle {
+    text-align: center;
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 20px;
+}
 
-@keyframes rotate {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.taskform {
+    max-width: 60vw;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+}
+
+.taskform label {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.taskform input,
+.taskform textarea {
+    border: 1px solid black;
+    width: 90%;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background-color: #fff;
+}
+
+.taskform button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    background-color: #000000;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
