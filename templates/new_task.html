@@ -4,8 +4,8 @@
 
 {% block content %}
 <section>
-    <h2>Create New Task</h2>
-    <form method="POST" action="{{ url_for('new_task', user=user) }}">
+    <h2 class="tasktitle">Create New Task</h2>
+    <form method="POST" action="{{ url_for('new_task', user=user) }}" class="taskform">
         <label for="title">Title:</label>
         <input type="text" id="title" name="title" required>
     
@@ -17,7 +17,7 @@
 
         <label for="play_list">Song:</label>
         <textarea id="play_list" name="play_list" required></textarea>
-    
+
         <button type="submit">Add Task</button>
     </form>
 </section>
