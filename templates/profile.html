@@ -42,7 +42,7 @@
             </section>
             {% endfor %}
         {% else %}
-            <p>No TuneTasks found for {{ user }}. Create your first TuneTask!</p>
+            <p>No TuneTasks found for {{ user }}. <a href="{{ url_for('new_task', user=user) }}">Create your first TuneTask</a>!</p>
         {% endif %}
     </section>
 {% endblock %}

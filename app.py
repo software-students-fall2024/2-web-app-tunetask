@@ -102,22 +102,37 @@ def create_app():
             elif db.users.find_one({"username": username}):
                 error = "Username already exists. Please choose a different one."
             else:
-                # add new user into database
-                db.users.insert_one({
-                    "name": name,
-                    "username": username,
-                    "password": password
-                })
-                return redirect(url_for('login'))
+                return "User not found", 404
 
-        return render_template('register.html', error=error)
 
-    @app.route('/logout')
-    @login_required
-    def logout():
-        logout_user()
-        return redirect(url_for('login'))
+        return render_template('login.html')
     
+    @app.route('/profile/<user>/new_task', methods = ["GET", "POST"])
+    def new_task(user):
+        if request.method == 'POST':
+            # Get form data from the user
+            title = request.form.get('title')
+            description = request.form.get('description')
+            task_list = [request.form.get('task_list')]
+            play_list = [request.form.get('play_list')]
+
+            if not task_name or not description:
+                flash("Task name and description are required!")
+                return redirect(url_for('new_task', user = user))
+
+            task_data = {
+                'username': user,
+                'title': title,
+                'description': description,
+                'task_list': task_list,
+                'play_list': play_list,
+            }
+
+            mongo.db.tune_tasks.insert_one(task_data)
+
+            flash('New task added successfully!')
+            return redirect(url_for('show_profile', user = user, collection = tune_tasks))
+        return render_template('new_task.html')
     return app
 
 
