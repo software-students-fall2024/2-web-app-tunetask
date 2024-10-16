@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from flask import Flask, make_response, request, redirect, url_for, render_template
+from flask import Flask, flash, make_response, request, redirect, url_for, render_template
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
 import os
 import pymongo
@@ -91,10 +91,6 @@ def create_app():
                 error = "Invalid username or password."
 
         return render_template('login.html', error=error)
-
-
-
-        return render_template('login.html', error=error)
     
     @app.route('/register', methods=["GET", "POST"])
     def register():
@@ -121,6 +117,33 @@ def create_app():
 
         return render_template('register.html', error=error)
 
+    @app.route('/profile/<user>/new_task', methods = ["GET", "POST"])
+    def new_task(user):
+        if request.method == 'POST':
+            # Get form data from the user
+            task_name = request.form.get('task_name')
+            description = request.form.get('description')
+            task = request.form.get('task')
+            song_name = request.form.get('song_name')
+
+            if not task_name or not description:
+                flash("Task name and description are required!")
+                return redirect(url_for('new_task', user = user))
+
+            task_data = {
+                'username': user,
+                'task_name': task_name,
+                'description': description,
+                'task': task,
+                'song_name': song_name,
+            }
+
+            db.tune_tasks.insert_one(task_data)
+
+            flash('New task added successfully!')
+            return redirect(url_for('show_profile', user = user))
+        return render_template('new_task.html')
+    
     @app.route('/logout')
     @login_required
     def logout():
