@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}New Task{% endblock %}
+
+{% block content %}
+<section>
+    <h2>Create New Task</h2>
+    <form method="POST" action="{{ url_for('newTask') }}">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required>
+    
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea>
+
+        <label for="task_list">Task:</label>
+        <textarea id="task_list" name="task" required></textarea>
+
+        <label for="play_list">Song:</label>
+        <textarea id="play_list" name="play_list" required></textarea>
+    
+        <button type="submit">Add Task</button>
+    </form>
+</section>
+{% endblock %}
